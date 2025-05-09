@@ -1,6 +1,9 @@
 package org.ed06.model;
 
 public class Cliente {
+    public static final String formatoEmail = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
+    public static final String formatoDni = "[0-9]{8}[A-Z]";
+    public static final int maxCaracteresNombre = 3;
     public int id;
     public String nombre;
     public String dni;
@@ -22,22 +25,21 @@ public class Cliente {
     }
 
     public static boolean validarNombre(String nombre) {
-        // Comprobamos que el nombre no sea nulo, esté vacio y tenga al menos 3 caracteres eliminando espacios inciales y finales
-        if (nombre == null || nombre.trim().length() < 3) {
+        if (nombre == null || nombre.trim().length() < maxCaracteresNombre) {
             throw new IllegalArgumentException("El nombre no es válido");
         }
         return true;
     }
 
     public static boolean validarEmail(String email) {
-        if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+        if (!email.matches(formatoEmail)) {
             throw new IllegalArgumentException("El email no es válido");
         }
         return true;
     }
 
     public static boolean validarDni(String dni) {
-        if (!dni.matches("[0-9]{8}[A-Z]")) {
+        if (!dni.matches(formatoDni)) {
             throw new IllegalArgumentException("El DNI no es válido");
         }
         return true;

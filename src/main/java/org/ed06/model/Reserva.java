@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class Reserva {
+    public static final double aplicarDescuentoVip = 0.9;
+    public static final int intervaloFechas = 7;
+    public static final double aplicarDescuentoAdicional = 0.95;
     private int id;
     private Habitacion habitacion;
     private Cliente cliente;
@@ -44,36 +47,29 @@ public class Reserva {
         return precioTotal;
     }
 
-    // Calcula el precio total de la reserva. Para calcular el precio total, se debe calcular el precio base de la habitación por el número de noches de la reserva. En el caso de que el cliente sea vip, se aplicará un descuento del 10%. Además, si el intervalo de fechas es mayor a 7 días, se aplicará un descuento adicional del 5%.
-    // Devuelve precio total de la reserva
+    /**
+     * calcula el precio con las fechas de entrada y salida
+     * con descuentos incluidos
+     * existe descuento Vio y descuento por pasar x dias
+     * @return el precio con descuentos posibles aplicados
+     */
+
     public double calcularPrecioFinal() {
-        //calculamos los días de la reserva
-        int n = fechaFin.getDayOfYear() - fechaInicio.getDayOfYear();
-        // Calculamos el precio base de la habitación por el número de noches de la reserva
-        double pb = habitacion.getPrecioBase() * n;
-        // Declaramos la variable para almacenar el precio final
-        double pf = pb;
 
-        // Si el cliente es VIP, aplicamos un descuento del 10%
+        int diasDeEstancia = fechaFin.getDayOfYear() - fechaInicio.getDayOfYear();
+
+        double precioBase = habitacion.getPrecioBase() * diasDeEstancia;
+
+        double precioFinal = precioBase;
+
         if (cliente.esVip) {
-            pf *= 0.9;
+            precioFinal *= aplicarDescuentoVip;
         }
 
-        // Si el intervalo de fechas es mayor a 7 días, aplicamos un descuento adicional del 5%
-        if (n > 7) {
-            pf *= 0.95;
+        if (diasDeEstancia > intervaloFechas) {
+            precioFinal *= aplicarDescuentoAdicional;
         }
 
-        // Devolvemos el precio final
-        return pf;
-    }
-
-    public void mostrarReserva() {
-        System.out.println("Reserva #" + id);
-        System.out.println("Habitación #" + habitacion.getNumero() + " - Tipo: " + habitacion.getTipo() + " - Precio base: " + habitacion.getPrecioBase());
-        System.out.println("Cliente: " + cliente.nombre);
-        System.out.println("Fecha de inicio: " + fechaInicio.toString());
-        System.out.println("Fecha de fin: " + fechaFin.toString());
-        System.out.printf("Precio total: %.2f €\n", precioTotal);
+        return precioFinal;
     }
 }
